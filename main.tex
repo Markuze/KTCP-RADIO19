@@ -1,0 +1,87 @@
+%\documentclass[sigplan,screen]{acmart}
+\documentclass[newfonts=false,format=sigconf,10pt,letterpaper]{acmart}
+
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[english]{babel}
+\usepackage{textcomp}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage[inline]{enumitem}
+
+%%%%%%%%%%%%%%%%%%%%% Commands from prev version
+\usepackage[utf8]{inputenc}
+%\usepackage[numbers]{natbib}
+% \usepackage[noadjust]{cite}
+
+%\renewcommand{\citedash}{--}  
+\newlist{inlinelist}{enumerate*}{1}
+\setlist[inlinelist]{label=(\arabic*)}
+\newlist{romanlist}{enumerate*}{1}
+\setlist[romanlist]{label=(\roman*)}
+
+
+\providecommand{\vs}{vs. }
+\providecommand{\ie}{\emph{i.e.,} }
+\providecommand{\eg}{\emph{e.g.,} }
+\providecommand{\cf}{\emph{cf.,} }
+\providecommand{\etc}{\emph{etc.} }
+
+\newcommand{\sockets}{Berkeley sockets\xspace}
+\newcommand{\proxies}{relays\xspace}
+\newcommand{\reconn}{reusable connections\xspace}
+\newcommand{\usec}{$\mu$sec\xspace}
+
+\newcommand{\T}[1]{\smallskip\noindent\textbf{#1}}
+\newcommand{\oursys}{KTCP \xspace}
+%a macro for defining a new variable in the document
+\newcommand{\newVar}[2]{\newcommand{#1}{\ensuremath{#2}\xspace}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newVar{\rc}{R_C}
+\newVar{\rs}{R_S}
+\newVar{\rmid}{R_M}
+\newVar{\rtt}{T}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{The Kernels of Splitting TCP in the Clouds}
+\author{Markuze Alex}
+\email{amarkuze@vmware.com}
+\affiliation{%
+  \institution{VMware Research}
+  \country{Israel}
+}
+
+\author{Bergman Aran}
+\email{bergmana@vmware.com}
+\affiliation{%
+  \institution{VMware Research}
+  \country{Israel}
+}
+
+\author{Doar Chen}
+\email{cdoar@vmware.com}
+\affiliation{%
+  \institution{VMware Research}
+  \country{Israel}
+}
+
+\date{January 2019}
+
+\begin{document}
+
+\begin{abstract}
+VMware is making an effort to become a leader in SD-WAN; gaining the edge on the market with the purchase of Velocloud and investing in future technologies in the form of the CBN project ~\cite{Elastic, CDD}
+
+\end{abstract}
+
+\maketitle
+
+\input{intro.tex}
+\input{eval.tex}
+\input{design.tex}
+
+\bibliographystyle{acm}
+\bibliography{bib,overlay,sigcomm18}
+\end{document}
