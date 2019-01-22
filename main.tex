@@ -35,7 +35,7 @@
 \newcommand{\usec}{$\mu$sec\xspace}
 
 \newcommand{\T}[1]{\smallskip\noindent\textbf{#1}}
-\newcommand{\oursys}{KTCP \xspace}
+\newcommand{\oursys}{KTCP\xspace}
 %a macro for defining a new variable in the document
 \newcommand{\newVar}[2]{\newcommand{#1}{\ensuremath{#2}\xspace}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,6 +43,11 @@
 \newVar{\rs}{R_S}
 \newVar{\rmid}{R_M}
 \newVar{\rtt}{T}
+
+\newcommand{\mycomm}[3]{{\footnotesize{{\color{#2} \textbf{[#1: #3]}}}}}
+%    \newcommand{\mycomm}[3]{}
+%define your comment NAME and COLOR here
+\newcommand{\IK}[1]{\mycomm{IK}{blue}{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{The Kernels of Splitting TCP in the Clouds}
@@ -66,14 +71,20 @@
   \institution{VMware Research}
   \country{Israel}
 }
-
+%%% potentially enable (i.e. remove the disable command) for the fields below in the camera-ready version          
+\settopmatter{printacmref=false}
+%\settopmatter{printfolios=false,printacmref=false} %numbers the pages; remove the ugly ACM reference
+   	  \setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+\pagestyle{plain} % removes running headers
 \date{January 2019}
 
 \begin{document}
 
 \begin{abstract}
-The \emph{Cloudified Business Network}(CBN) project ~\cite{Elastic, CDD}, constructs an overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches using easily accessible public infrastructure \ie Azure,AWS,GCP,Alibaba Cloud, \etc. Clients using CBN could see improvements in download times sometimes in the order of magnitude. The main ingredient in improving network performance was shown to be the split TCP technique ~\cite{CDD, }. \newline
-This paper describes \oursys, a Linux Kernel module written for CBN. When designing \oursys our goal was to create a reliable tool, that could be safely used in an industry grade product. \oursys is built with well trusted and tested "off-the-shelf" components. At the same time we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \oursys is build for CBN multitennat environment and designed to linearly scale on multi-core systems. We show how \oursys is able to increase the network bandwidth and minimize the connection \emph{latency} close to the physically possible. 
+The \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD} constructs an \IK{a global?} overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches using \IK{rephrase end of sentence?} easily accessible public infrastructure \ie Azure,AWS,GCP,Alibaba Cloud, \etc 
+Clients using CBN could see improvements in download times sometimes in the order of magnitude.\IK{by orders of magnitude?} The main ingredient in improving network performance was shown to be the split TCP technique~\cite{CDD, }. \newline
+This paper describes \oursys, a Linux Kernel module written for CBN. When designing \oursys our goal was to create a reliable tool that could be safely used in an industry grade product. \IK{until now you haven't said what the problem is with existing products that you are trying to solve; need to spend a sentence killing them} \oursys is built with well trusted and tested "off-the-shelf" components. At the same time we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \IK{why? tell us why it's a problem today with existing products...} \oursys is built for CBN multitenant environment and designed to linearly scale on multi-core systems. \IK{Is this new? hard?} We show how \oursys is able to increase the network bandwidth and minimize the connection \emph{latency} close to the physically possible. \IK{you tell us that it achieves many things in hindsight, but haven't prepared us by telling us from the start why we care about them}
 
 \end{abstract}
 
