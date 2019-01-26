@@ -1,7 +1,5 @@
 \section{laying pipes in the clouds}\label{sec:rate-control}
 
-\subsection{The Dream Network Pipe}\label{subsec:dream-pipe}
-
 \begin{figure*}[!t]
   \centering
     \begin{subfigure}{0.65\columnwidth}
@@ -12,70 +10,73 @@
 \end{subfigure}    \centering
 \begin{subfigure}{0.65\columnwidth}
   \centering
-  \includegraphics[width=\columnwidth]{figures/e2e.png}%test1.pdf}
-    \caption{End-to-end through the Internet (or cloud).} \label{fig:e2e}
+  \includegraphics[width=\columnwidth]{figures/e2e.png}
+    \caption{End-to-end (no split) transmission.} \label{fig:e2e}
 \end{subfigure}    \centering
 \begin{subfigure}{0.65\columnwidth}
   \centering
   \includegraphics[width=\columnwidth,clip]{figures/split.png}
-    \caption{Simple TCP cloud split.} \label{fig:baseline}
+    \caption{Simple TCP split, on both \rc and \rs} \label{fig:baseline}
 \end{subfigure}
-%  \centering
-% \begin{subfigure}{0.6\columnwidth}
-%   \centering
-%   \includegraphics[width=\columnwidth]{figures/early-syn.png}
-%     \caption{Early-SYN.} \label{fig:early-syn}
-% \end{subfigure}
-    \caption{Illustrated comparison of the considered baseline data transmission methods. Suppose, for simplicity of exposition, that the client requests three MSS-sized packets using HTTP over TCP, that the initial TCP window size is one MSS, and that there are no losses.\\ \textit{(a)} In an ideal clean-slate world, the request for packets would go through directly, triggering the transmission of all response packets. The time-to-first-byte (TTFB) is just one round-trip time (RTT), the lowest possible TTFB. The download time is barely higher.\\ \textit{(b)} End-to-end TCP transmission first requires the establishment of an end-to-end connection, adding one RTT to the ideal finish time. Waiting one RTT for the first ACK further delays the download. \\ \textit{(c)} The baseline strategy of Section~\ref{sec:ocd-baseline} decreases the ACK times for longer files, but introduces new delays such as thread fork delays in the connection. This explains why the Baseline is less efficient for small files. We later revisit all the delays that appear beyond those of the ideal transmission (Figure~\ref{fig:oursys-improvements}). We show how to address the delays marked (1)-(4), but are left with delays $\Delta_c$ and $\Delta_s$ on the client and server sides, respectively.  }
+
+    \caption{Illustrated comparison of the considered baseline data transmission methods.}
 \end{figure*}
 
 \begin{figure*}[!t]
   \centering
-    \begin{subfigure}{0.48\columnwidth}
+    \begin{subfigure}{0.75\columnwidth}
   \centering
   \includegraphics[width=\columnwidth]{figures/early-syn.png}
     \caption{Early-SYN.}
     \label{fig:early-syn}
 \end{subfigure}    \centering
-\begin{subfigure}{0.48\columnwidth}
+\begin{subfigure}{0.75\columnwidth}
   \centering
   \includegraphics[width=\columnwidth]{figures/thread.png}
     \caption{Thread pool.} \label{fig:thread-pool}
 \end{subfigure}    \centering
-\begin{subfigure}{0.48\columnwidth}
+\begin{subfigure}{0.75\columnwidth}
   \centering
   \includegraphics[width=\columnwidth]{figures/connection.png}
     \caption{Connection pool.} \label{fig:connection-pool}
 \end{subfigure}     \centering
-\begin{subfigure}{0.48\columnwidth}
+\begin{subfigure}{0.75\columnwidth}
   \centering
   \includegraphics[width=\columnwidth]{figures/turbo.png}
     \caption{Turbo-Start TCP.} \label{fig:turbo-start-tcp}
 \end{subfigure}
-%  \centering
-% \begin{subfigure}{0.6\columnwidth}
-%   \centering
-%   \includegraphics[width=\columnwidth]{figures/early-syn.png}
-%     \caption{Early-SYN.} \label{fig:early-syn}
-% \end{subfigure}
-    \caption{\oursys successive implementation improvements: Using \textit{Early-SYN}, we can remove SYN-ACK and ACK delays (marked as (1) in Figure~\ref{fig:baseline}). Using a \textit{thread pool} removes forks (marked as (2) in Figure~\ref{fig:baseline}). With a \textit{connection pool}, delay (3) in Figure~\ref{fig:baseline} is eliminated. Turbo-Start TCP eliminates delay (4). The two last delays (marked as ``?'' in Figure~\ref{fig:baseline}) that need be removed are delays $\Delta_c$ and $\Delta_s$ on the client and server sides, respectively. As both depend on the client and server parameters, they seem beyond our control. 
-    }
+
+    \caption{\oursys successive implementation improvements}
     \label{fig:oursys-improvements}
 \end{figure*}
 
+%\begin{figure}[t]
+%  \centering
+%\begin{subfigure}{0.7\columnwidth}
+%  \centering
+%  \includegraphics[width=\columnwidth]{figures/turbo.png}
+%    \caption{Turbo-Start TCP.} \label{fig:turbo-start-tcp}
+%\end{subfigure}
+%
+%    \caption{Illustrated comparison of the considered baseline data transmission methods.}
+%\end{figure}
+
 %\T{Congestion-less control?} The cloud provides an auto-scaling networking infrastructure with links of virtually-infinite capacity. Like others~\cite{haq2017measuring}, we find that in-cloud paths provide more predictable results than the public Internet, with an order of magnitude lower loss rate. As a result, flows in the cloud will rarely ever encounter congestion. This compels us to rethink the role of congestion control in the cloud. In light of the near-absence of congestion, we essentially want a simple high-rate sending protocol capable of dealing with the very rare loss events, without necessarily backing off. Even flow control is not necessarily needed within the cloud, as clouds can increasingly provide an elastic memory infrastructure~\cite{hotadd,baloon} that can quickly adapt to any receive-buffer temporary load. 
 
-\T{Ideal pipe.} Given the large capacity of the cloud, we wonder how close we could get to an ideal transmissio..
-\autoref{fig:ideal} illustrates our fundamental model of an ideal transmission. Importantly, this model reflects a protocol-free, theoretical ideal transmission. Our aim for the remainder of this section is to identify the means for approximating this model in practice. We show in \autoref{fig:e2e} that a classical end-to-end data transfer based on HTTP over TCP falls short 
-%\AB{I'm not sure how CC got into this... Some of the delays are not due to congestion control, but due to TCP's operation and design tradeoffs, regardless of CC. Also, should we mention that the diagram assumes HTTP as the transport protocol? (Does it also fit others, like, \eg FTP?)} congestion control falls short 
-of this goal. In addition, adding a stop on our  also introduces additional delays with respect to the ideal model. We point out these delays in \autoref{fig:baseline}, and discuss how these delays can be eliminated, so as to come close to our theoretical ideal.
-
-%Realizing rate-control for the cloud could have simply utilized a form of Reliable UDP. To be backwards compatible, we simply used instead a Cubic TCP with an aggressive initial window size.
+%\T{Ideal pipe.} 
+The cloud provides an auto-scaling networking infrastructure with links of virtually-infinite capacity. Like others~\cite{haq2017measuring}, we find that in-cloud paths provide more predictable results than the public Internet, with an order of magnitude lower loss rate. As a result, flows in the cloud will rarely ever encounter congestion. Given the favorable conditions in the cloud, we wonder if we could facilitate an ideal transmission. \autoref{fig:ideal} illustrates our fundamental model of an ideal transmission. Importantly, this model reflects a protocol-free, theoretical ideal transmission.
+In this example, we suppose; that the client requests three MSS-sized packets using HTTP over TCP, that the initial TCP window size is one MSS, and that there are no losses.
+ \textit{Ideal (\autoref{fig:ideal}):} In an ideal clean-slate world, the request for packets would go through the \relays\footnote{The two \relays are depicted as \rc and \rs in all figures} directly.  triggering the transmission of all response packets. The time-to-first-byte (TTFB) is just one round-trip time (RTT), the lowest possible TTFB.\\
+Unfortunately, the classical end-to-end data transfer shown in \autoref{fig:e2e}, falls short of this ideal model.
+ \textit{Real (\autoref{fig:e2e}):} End-to-end TCP transmission based on HTTP over TCP, first requires the establishment of an end-to-end connection, adding one RTT to the ideal finish time. Waiting one RTT for the first ACK further delays the download.\\ 
+In addition to the delays caused by TCP, each "stop" on one of the \relays also introduces additional delays. These delays are shown in \autoref{fig:baseline}.
+\textit{Split (\autoref{fig:baseline}): } The basic TCP split decreases the ACK times and thus speeds up download time for larger files. But a naive implementation also introduces additional overheads which we discuss in section ~\ref{sec:approx}. These overheads explain why the naive implementation is detrimental for small files.  (Figure~\ref{fig:oursys-improvements}). We show how to address the delays marked (1)-(4), but are left with delays $\Delta_c$ and $\Delta_s$ on the client and server sides, respectively.
 
 \subsection{Approximating the Ideal Pipe}\label{sec:approx}
 
-To approximate the ideal data transmission model of Section~\ref{subsec:dream-pipe}, we introduce \textit{\oursys}.
-The goal of \oursys is to enhance the OCD Baseline of Section~\ref{sec:ocd-baseline} and provide efficient, delay-free TCP optimization; while utilizing commodity VMs and standard programming APIs. This is done by incorporating four improvements to the baseline strategy, illustrated in Figure~\ref{fig:oursys-improvements}. Together, these four components eliminate the delays marked (1)-(4) in Figure~\ref{fig:baseline}. We next elaborate on each of the four improvements. We discuss the many implementation details involved in realizing \oursys in Section~\ref{sec:design} and provide our open-source code in~\cite{ktcp}.
+To approximate the ideal data transmission model, we introduce \textit{\oursys}.
+The goal of \oursys is to provide efficient, delay-free TCP optimization; while utilizing commodity VMs and standard programming APIs. This is done by incorporating four improvements to the baseline strategy, illustrated in Figure~\ref{fig:oursys-improvements}. Together, these four components eliminate the delays marked (1)-(4) in Figure~\ref{fig:baseline}. We next elaborate on each of the four improvements. We discuss the many implementation details involved in realizing \oursys in Section~\ref{sec:design} and provide our open-source code in~\cite{ktcp}.
+Using \textit{Early-SYN}, we can remove SYN-ACK and ACK delays (marked as (1) in Figure~\ref{fig:baseline}). Using a \textit{thread pool} removes forks (marked as (2) in Figure~\ref{fig:baseline}). With a \textit{connection pool}, delay (3) in Figure~\ref{fig:baseline} is eliminated. Turbo-Start TCP eliminates delay (4). The two last delays (marked as ``?'' in Figure~\ref{fig:baseline}) that need be removed are delays $\Delta_c$ and $\Delta_s$ on the client and server sides, respectively. As both depend on the client and server parameters, are beyond our control.
 
 %\oursys incorporates four improvements to the baseline strategy of Section~\ref{x}, illustrated in Figure~\ref{fig:baseline}. Together, these four improvements eliminate the delays marked (1)-(4) in \ref{fig:oursys-improvements}. We next elaborate on each of the four improvements. We discuss the many implementation details involved in realizing \oursys in Section~\ref{sec:design}.
 
