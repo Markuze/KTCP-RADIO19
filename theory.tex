@@ -85,7 +85,7 @@ The goal of \oursys is to provide efficient, delay-free TCP optimization; while 
 While the notion of creating the two legs of the connection in parallel is not new, ours is the first to use standard Linux utilities.
 
 \T{Improvement 2: Thread pool.} 
-The creation of new processes or threads for each new split connection is time-consuming and adds greatly to the connection jitter. Some outliers may take tens of milliseconds, greatly hurting performance. For small files/objects, this jitter may even nullify the benefit of \oursys. To mitigate this problem, we create a pool of reusable threads. These are sleeping threads, awaiting to accept new tasks. Using a \textit{thread pool} removes the delays marked as (2) in Figure ~\ref{fig:baseline}.
+The creation of new processes or threads for each new split connection is \\time-consuming and adds greatly to the connection jitter. Some outliers may take tens of milliseconds, greatly hurting performance. For small files/objects, this jitter may even nullify the benefit of \oursys. To mitigate this problem, we create a pool of reusable threads. These are sleeping threads, awaiting to accept new tasks. Using a \textit{thread pool} removes the delays marked as (2) in Figure ~\ref{fig:baseline}.
 
 \T{Improvement 3: Reusable connections.}  This optimization aims to improve the performance over long connections, \ie those where the RTT between the two cloud relays dominates. The goal is to negate the delay of the long three-way handshake. We achieve this goal by preemptively connecting to distant \relays. On each \relay we create a pool of \reconn between each pair of distant \relays.
 With a \textit{connection pool}, delay (3) in Figure~\ref{fig:baseline} is eliminated.
