@@ -67,13 +67,12 @@
   \country{Israel}
 }
 
-\author{Doar Chen}
+\author{Dar Chen}
 \email{cdoar@vmware.com}
 \affiliation{%
   \institution{VMware Research}
   \country{Israel}
 }
-
 
 \author{Israel Cidon}
 \email{icidon@vmware.com}
@@ -93,7 +92,9 @@
 
 \begin{abstract}
 The \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD} constructs a global overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches. CBN leverages the global geographical spread of public clouds and their vast compute and networking infrastructure.
-Clients using CBN could see improvements in download times sometimes by orders of magnitude. The main ingredient in improving network performance was shown to be the split TCP technique~\cite{CDD, }. \IK{BTW you sell this as being about CBN only, but maybe you want to state that it's more general and could be used in a vast range of VMware products that could rely on TCP split, eg for VM migration?} Unfortunately, the available TCP \IK{split} solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, all available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded segment. The redundant system calls hurt server performance and limit the scalability of such solutions.
+Clients using CBN could see improvements in download times sometimes by orders of magnitude. The main ingredient in improving network performance was shown to be the split TCP technique~\cite{CDD, }. 
+%\IK{BTW you sell this as being about CBN only, but maybe you want to state that it's more general and could be used in a vast range of VMware products that could rely on TCP split, eg for VM migration?} 
+Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, all available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded segment. The redundant system calls hurt server performance and limit the scalability of such solutions.
 \newline
 This paper describes \oursys, a Linux Kernel module written for CBN. \IK{In the next sentences: 1. I suggest moving all sentences like ``our goal was..." to the first paragraph and merge into one of the sentences that state ``Current TCP split solutions also do not..." 2. I was missing 1-2 sentences about the algorithms/techniques/novelty in the result.} When designing \oursys our goal was to create a reliable tool that could be safely used in an industry grade product.  \oursys is built with well trusted and tested "off-the-shelf" components. At the same time we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \oursys is built for CBN multi-tenant environment and designed to linearly scale on multi-core systems. \IK{Is this new? hard?} We show how \oursys is able to increase the network bandwidth and minimize the connection \emph{latency} close to the physically possible. \IK{you tell us that it achieves many things in hindsight, but haven't prepared us by telling us from the start why we care about them}
 
@@ -107,5 +108,5 @@ This paper describes \oursys, a Linux Kernel module written for CBN. \IK{In the 
 \input{evaluation.tex}
 
 \bibliographystyle{acm}
-\bibliography{bib,overlaybib,sigcomm18}
+\bibliography{bib,overlaybib,sigcomm18,radio}
 \end{document}
