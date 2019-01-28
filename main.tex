@@ -1,5 +1,5 @@
 %\documentclass[sigplan,screen]{acmart}
-\documentclass[newfonts=false,format=sigconf,10pt,letterpaper]{acmart}
+\documentclass[newfonts=false,format=sigconf,9pt,letterpaper]{acmart}
 
 \usepackage{xspace}
 \usepackage{graphicx}
@@ -22,6 +22,7 @@
 \newlist{romanlist}{enumerate*}{1}
 \setlist[romanlist]{label=(\roman*)}
 
+\definecolor{darkgreen}{rgb}{0,0.5,0}
 
 \providecommand{\vs}{vs. }
 \providecommand{\ie}{\emph{i.e.,} }
@@ -50,36 +51,40 @@
 %    \newcommand{\mycomm}[3]{}
 %define your comment NAME and COLOR here
 \newcommand{\IK}[1]{\mycomm{IK}{blue}{#1}}
+\newcommand{\AB}[1]{\mycomm{AB}{darkgreen}{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Kernels of Splitting TCP in the Clouds}
-\author{Markuze Alex}
-\email{amarkuze@vmware.com}
-\affiliation{%
-  \institution{VMware Research}
-  \country{Israel}
-}
+\newcommand{\aut}[2]
+{#1\texorpdfstring{$^{#2}$}{(#2)}}
+\author{\aut{Markuze Alex}{1,2}, \aut{Bergman Aran}{1}, \aut{Dar Chen}{1}, \aut{Issac Keslassy}{2},
+        \aut{Israel Cidon}{1,2}}
 
-\author{Bergman Aran}
-\email{bergmana@vmware.com}
+%\affiliation{%
+%  \institution{VMware Research}
+%  \country{Israel}
+%}
+%\author{Bergman Aran}
+%\email{bergmana@vmware.com}
+%\affiliation{%
+%  \institution{VMware Research}
+%  \country{Israel}
+%}
+%\author{Dar Chen}
+%\email{cdoar@vmware.com}
+%\affiliation{%
+%  \institution{VMware Research}
+%  \country{Israel}
+%}
+%\author{Israel Cidon}
+%\email{icidon@vmware.com}
 \affiliation{%
-  \institution{VMware Research}
-  \country{Israel}
+  \institution{$^1$VMware Research\quad}
+  \institution{$^2$Technion\quad}
+%  \country{Palo Alto}
 }
+\email{{amarkuze},{icidon}@vmware.com}
 
-\author{Dar Chen}
-\email{cdoar@vmware.com}
-\affiliation{%
-  \institution{VMware Research}
-  \country{Israel}
-}
-
-\author{Israel Cidon}
-\email{icidon@vmware.com}
-\affiliation{%
-  \institution{VMware Research}
-  \country{Palo Alto}
-}
 %%% potentially enable (i.e. remove the disable command) for the fields below in the camera-ready version          
 \settopmatter{printacmref=false}
 %\settopmatter{printfolios=false,printacmref=false} %numbers the pages; remove the ugly ACM reference
@@ -91,12 +96,25 @@
 \begin{document}
 
 \begin{abstract}
-The \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD} constructs a global overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches. CBN leverages the global geographical spread of public clouds and their vast compute and networking infrastructure.
-Clients using CBN could see improvements in download times sometimes by orders of magnitude. The main ingredient in improving network performance was shown to be the split TCP technique~\cite{CDD, }. 
+The VMware OCTO \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD}, 
+constructs a global overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches. The project leverages the global geographical spread of public clouds and their vast compute and networking infrastructure.
+Clients using CBN could see improvements in download times sometimes by orders of magnitude
+%\AB{I still think this is way overstating what we have. Also, you have both ``could'' and ``sometimes'' in the same sentence...}. 
+The main contributer to improving network performance was shown to be the split TCP technique. 
 %\IK{BTW you sell this as being about CBN only, but maybe you want to state that it's more general and could be used in a vast range of VMware products that could rely on TCP split, eg for VM migration?} 
-Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, all available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded segment. The redundant system calls hurt server performance and limit the scalability of such solutions.
-\newline
-This paper describes \oursys, a Linux Kernel module written for CBN. \IK{In the next sentences: 1. I suggest moving all sentences like ``our goal was..." to the first paragraph and merge into one of the sentences that state ``Current TCP split solutions also do not..." 2. I was missing 1-2 sentences about the algorithms/techniques/novelty in the result.} When designing \oursys our goal was to create a reliable tool that could be safely used in an industry grade product.  \oursys is built with well trusted and tested "off-the-shelf" components. At the same time we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \oursys is built for CBN multi-tenant environment and designed to linearly scale on multi-core systems. \IK{Is this new? hard?} We show how \oursys is able to increase the network bandwidth and minimize the connection \emph{latency} close to the physically possible. \IK{you tell us that it achieves many things in hindsight, but haven't prepared us by telling us from the start why we care about them}
+Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, all available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded buffer. The redundant system calls hurt server performance and limit the scalability of such solutions.
+
+This paper describes \oursys, a Linux Kernel module written for CBN. 
+%\IK{In the next sentences: 1. I suggest moving all sentences like ``our goal was..." to the first paragraph and merge into one of the sentences that state ``Current TCP split solutions also do not..." 2. I was missing 1-2 sentences about the algorithms/techniques/novelty in the result.} 
+When designing \oursys our goal was to create a reliable tool that could be safely used . At the same time
+\AB{This somewhat suggests that this is hard to achieve while doing whatever was stated in the previous sentence. I could find any connection between the two} 
+we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \oursys is designed to linearly scale on multi-core systems. We show how \oursys is able to increase the network bandwidth
+\AB{not sure what you mean here - how does KTCP increase network bandwidth/capacity? Maybe use a different term?} 
+and reduce the connection \emph{latency} close to the physically possible.
+%\AB{why is this important? How does this compare with 0-RTT methods already available? I wouldn't use the ``physically possible'' thing here, because we are very far from what is actually physically possible (compare to a fiber connecting the two endpoints directly, without any routers in the middle, going through the shortest path between the two points - that would be closer to what is physically possible....). Also, I think this sentence should be rephrased.} %\IK{you tell us that it achieves many things in hindsight, but haven't prepared us by telling us from the start why we care about them}
+%\AB{Why not emphasize the added benefit in end-to-end latency and how this improves performance for ping-pong-based applications? (and emphasize why these are important...)}
+
+\AB{One last thing - probably a good idea to mention VMware somewhere, and why KTCP is in VMware's interests.}
 
 \end{abstract}
 
