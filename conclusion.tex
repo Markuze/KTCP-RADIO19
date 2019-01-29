@@ -1,7 +1,8 @@
 \section{Related work}
 To our knowledge \oursys is the first fully featured in-kernel implementation of TCP split.
-One previous work~\cite{kernelsplit} uses Netfilter hooks to forward packets but doesn't maintain a TCP stack per connection, instead using its own book keeping code for packet re-transmission.
+One previous work~\cite{kernelsplit} uses Netfilter hooks to forward packets but doesn't maintain a TCP stack per connection, instead using its own bookkeeping code for packet re-transmission.
 A different approach~\cite{siracusano2016miniproxy} uses unikernels ~\cite{kivity2014v} and a modified lwip ~\cite{dunkels2001design} as the basis of their proxies. Both approaches lack the proven stability, reliability and versatility of the Linux kernel, all needed for a reliable product.
 
 \section{Future Work}
-We have demonstrated that \oursys can improve download times of files of all sizes, and greatly improve connection latencies by reducing the TTFB. Using kernel sockets we have avoided the heavy cost of system calls, but the socket semantics still use copying. This copying to/from the process buffer from/to the network stack takes about 20\% of the CPU cycles on our setup. By exploring zero-copy semantics and eliminating this overhead, we can gain the positive double effect of reducing the cycles used per byte and reducing CPU cache trashing, caused by the redundant copy.
+We have demonstrated that \oursys can improve download times of files of all sizes, and greatly improve connection latencies by reducing the TTFB. 
+By using kernel sockets we have avoided the heavy cost of system calls, but the socket semantics still use copying. This copying to/from the process buffer from/to the network stack takes about 20\% of the CPU cycles on our setup. By exploring zero-copy semantics and eliminating this overhead, we can gain the positive double effect of reducing the cycles used per byte and reducing CPU cache trashing, caused by the redundant copy.

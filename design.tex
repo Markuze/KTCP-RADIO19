@@ -7,7 +7,6 @@
 %\sockets are time-tested and ubiquitous and thus a clear choice.
 %\oursys \cite{ktcp} is a kernel module based on Ubunutu 17.04. The goal of \oursys is to provide an efficient, delay-free TCP optimization, while utilizing commodity VMs and standard programming APIs. Easily-deployable commodity VMs in a public cloud environment provide a powerful and flexible platform for our goals, while \sockets are time-tested and ubiquitous and thus a clear choice.\MA{An overview of the section is needed}
 
-
 \T{Kernel mode.} We implemented \oursys as a kernel module. We rely on procfs~\cite{proc} to control the behaviour of \oursys. Procfs, a virtual file system~\cite{virtfs} provides a simple interface and facilitates easy scripting that allows communication with the module at run time.
 The decision to use kernel mode is a significant one. While developing in user space would have provided an easier development environment, implementing \oursys in the kernel allows us to (1)~take advantage of resources only available in the kernel, such as \textit{Netfilter}~\cite{netfilter}, which is crucial to our needs; and (2)~avoid the penalties that stem from numerous \textit{system calls}~\cite{Copy, FlexSC}. By working in the kernel, we eliminate the redundant transitions to and from user space by avoiding gratuitous system calls. Netfilter, which provides hooks for callbacks on the network stack, is the standard option for capturing and processing a packet in various stages of its path trough the network stack.  
 
@@ -45,7 +44,7 @@ Once the destination address is received by \rs , a connection to the target is 
 For example, a SYN captured on \rc will trigger a look-up in the pool of \reconns on \rc; looking for an existing TCP connection between \rc and \rs. If a \reconn exists it will be used for the split connection. \rc will send the target information inside the connection. Upon receiving the target information from \rc, \rs will establish a TCP connection with the target, and from that point on \rs will forward the stream from \rc to the target. When the connection terminates the socket associated with the connection will be freed and will not be reused.\\ 
  On \reconn sockets Nagle's Algorithm~\cite{nagle} is disabled. In our experiments, we have seen that the TTFB is increased by some $200$ milliseconds, unless Nagle's Algorithm is disabled.  
 
-\T{Proc.} The water marks of the thread-pool, the destination and number or \reconn are controlled via the procfs~\cite{proc} interface. These parameters can be modified in run time.
+\T{Proc.} The water marks of the thread-pool, the destination and number or \reconn are controlled via the procfs~\cite{proc} interface. These parameters can be modified at run time.
 
 %\T{Effort.} The total implementation of \oursys is less than 2000 LOC (lines of code). The basic implementation is about 500 LOC, thread pool and early syn add 300 LOC each, and \reconn add 500 LOC. The code for the proc interface and common utilities consists of about 300 LOC.
 
