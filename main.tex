@@ -32,7 +32,8 @@
 
 \newcommand{\sockets}{Berkeley sockets\xspace}
 \newcommand{\proxies}{relays\xspace}
-\newcommand{\reconn}{pre-established connections\xspace}
+\newcommand{\reconns}{pre-established connections\xspace}
+\newcommand{\reconn}{pre-established connection\xspace}
 \newcommand{\usec}{$\mu$sec\xspace}
 
 \newcommand{\T}[1]{\smallskip\noindent\textbf{#1}}
@@ -79,8 +80,8 @@
 %\author{Israel Cidon}
 %\email{icidon@vmware.com}
 \affiliation{%
-  \institution{$^1$VMware Research\quad}
-  \institution{$^2$Technion\quad}
+  \institution{$^1$VMware Research\quad $^2$Technion\quad}
+  %\institution{}
 %  \country{Palo Alto}
 }
 \email{{amarkuze},{icidon}@vmware.com}
@@ -96,25 +97,16 @@
 \begin{document}
 
 \begin{abstract}
-The VMware OCTO \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD}, 
+The \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD} by VMware OCTO, 
 constructs a global overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches. The project leverages the global geographical spread of public clouds and their vast compute and networking infrastructure.
 Clients using CBN could see improvements in download times sometimes by orders of magnitude
-%\AB{I still think this is way overstating what we have. Also, you have both ``could'' and ``sometimes'' in the same sentence...}. 
 The main contributer to improving network performance was shown to be the split TCP technique. 
 %\IK{BTW you sell this as being about CBN only, but maybe you want to state that it's more general and could be used in a vast range of VMware products that could rely on TCP split, eg for VM migration?} 
-Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, all available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded buffer. The redundant system calls hurt server performance and limit the scalability of such solutions.
+Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded buffer. The redundant system calls hurt server performance and limit the scalability of such solutions. 
 
-This paper describes \oursys, a Linux Kernel module written for CBN. 
-%\IK{In the next sentences: 1. I suggest moving all sentences like ``our goal was..." to the first paragraph and merge into one of the sentences that state ``Current TCP split solutions also do not..." 2. I was missing 1-2 sentences about the algorithms/techniques/novelty in the result.} 
-When designing \oursys our goal was to create a reliable tool that could be safely used . At the same time
-\AB{This somewhat suggests that this is hard to achieve while doing whatever was stated in the previous sentence. I could find any connection between the two} 
-we were aiming to  minimize and effectively eliminate any overheads of establishing the split TCP connection. \oursys is designed to linearly scale on multi-core systems. We show how \oursys is able to increase the network bandwidth
-\AB{not sure what you mean here - how does KTCP increase network bandwidth/capacity? Maybe use a different term?} 
-and reduce the connection \emph{latency} close to the physically possible.
-%\AB{why is this important? How does this compare with 0-RTT methods already available? I wouldn't use the ``physically possible'' thing here, because we are very far from what is actually physically possible (compare to a fiber connecting the two endpoints directly, without any routers in the middle, going through the shortest path between the two points - that would be closer to what is physically possible....). Also, I think this sentence should be rephrased.} %\IK{you tell us that it achieves many things in hindsight, but haven't prepared us by telling us from the start why we care about them}
+This paper describes \oursys, a Linux Kernel module built to take full advantage of a cloud environment.  
+The design of \oursys aims to minimize and effectively eliminate any overheads of establishing the split TCP connection. We define a theoretical model for optimal transmission and cover the methods we use to bring \oursys as close as possible to this ideal model. We demonstrate that \oursys is able to considerably increase the link utilization by TCP connections and reduce the connection \emph{latency} close to the theoretically possible.
 %\AB{Why not emphasize the added benefit in end-to-end latency and how this improves performance for ping-pong-based applications? (and emphasize why these are important...)}
-
-\AB{One last thing - probably a good idea to mention VMware somewhere, and why KTCP is in VMware's interests.}
 
 \end{abstract}
 
@@ -124,6 +116,7 @@ and reduce the connection \emph{latency} close to the physically possible.
 \input{theory.tex}
 \input{design.tex}
 \input{evaluation.tex}
+\input{conclusion.tex}
 
 \bibliographystyle{acm}
 \bibliography{bib,overlaybib,sigcomm18,radio}
