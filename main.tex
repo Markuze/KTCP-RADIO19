@@ -58,7 +58,7 @@
 \title{Kernels of Splitting TCP in the Clouds}
 \newcommand{\aut}[2]
 {#1\texorpdfstring{$^{#2}$}{(#2)}}
-\author{\aut{Markuze Alex}{1,2}, \aut{Bergman Aran}{1}, \aut{Dar Chen}{1}, \aut{Issac Keslassy}{2},
+\author{\aut{Alex Markuze}{1,2}, \aut{Aran Bergman}{1}, \aut{Chen Dar}{1}, \aut{Isaac Keslassy}{1,2},
         \aut{Israel Cidon}{1,2}}
 
 %\affiliation{%
@@ -84,7 +84,7 @@
   %\institution{}
 %  \country{Palo Alto}
 }
-\email{{amarkuze},{icidon}@vmware.com}
+\email{{amarkuze,bergmana,cdoar,ikeslassy,icidon}@vmware.com}
 
 %%% potentially enable (i.e. remove the disable command) for the fields below in the camera-ready version          
 \settopmatter{printacmref=false}
@@ -97,21 +97,20 @@
 \begin{document}
 
 \begin{abstract}
-The \emph{Cloudified Business Network}(CBN) project~\cite{Elastic, CDD} by VMware OCTO, 
+The \emph{Cloudified Business Network} (CBN) project~\cite{Elastic, CDD} by VMware OCTO, 
 constructs a global overlay network across public clouds. CBN interconnects geographically-dispersed corporate datacenters and branches. The project leverages the global geographical spread of public clouds and their vast compute and networking infrastructure.
-Clients using CBN could see improvements in download times sometimes by orders of magnitude
-The main contributer to improving network performance was shown to be the split TCP technique. 
+Clients using CBN could see improvements in download times sometimes by orders of magnitude.
+The main contributor to improving network performance was shown to be the split TCP technique. 
 %\IK{BTW you sell this as being about CBN only, but maybe you want to state that it's more general and could be used in a vast range of VMware products that could rely on TCP split, eg for VM migration?} 
 Unfortunately, the available TCP split solutions incur a penalty on connection time, and actually hurt the performance of short flows. In addition, available TCP split implementations are in user-space, and thus have two expensive system calls per forwarded buffer. The redundant system calls hurt server performance and limit the scalability of such solutions. 
 
 This paper describes \oursys, a Linux Kernel module built to take full advantage of a cloud environment.  
-The design of \oursys aims to minimize and effectively eliminate any overheads of establishing the split TCP connection. We define a theoretical model for optimal transmission and cover the methods we use to bring \oursys as close as possible to this ideal model. We demonstrate that \oursys is able to considerably increase the link utilization by TCP connections and reduce the connection \emph{latency} close to the theoretically possible.
+The design of \oursys aims to minimize and effectively eliminate any overheads of establishing the split TCP connection. We define a theoretical model for optimal transmission and cover the methods we use to bring \oursys as close as possible to this ideal model. We demonstrate that \oursys is able to considerably increase the link utilization by TCP connections and reduce the connection \emph{latency} close to its theoretical minimum.
 %\AB{Why not emphasize the added benefit in end-to-end latency and how this improves performance for ping-pong-based applications? (and emphasize why these are important...)}
-
 \end{abstract}
 
 \maketitle
-
+\sloppypar
 \input{intro.tex}
 \input{theory.tex}
 \input{design.tex}
